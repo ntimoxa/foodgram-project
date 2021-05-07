@@ -32,6 +32,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     image = models.ImageField()
     description = models.TextField()
+    pub_date = models.DateTimeField("date published", auto_now_add=True)
     cooking_time = models.PositiveSmallIntegerField()
     tag = models.ManyToManyField(Tag)
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
@@ -48,3 +49,29 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     amount = models.PositiveSmallIntegerField()
+
+
+class FollowAuthor(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='follower'
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='following'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_followgroup'),
+        ]
+
+
+class SelectedRecipes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='selected')
+    select = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+
+class IngredientsPurchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase')
+    purchase = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
