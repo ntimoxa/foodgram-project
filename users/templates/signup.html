@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %} Войти в аккаунт {% endblock %}
+{% block header %}
+{% load static%}
+<link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+{% block content %}
+{% load user_filters %}
+    <div class="main__header">
+        <h1 class="main__title">Регистрация</h1>
+    </div>
+
+    <div class="form-container">
+        {% for error in form.errors %}
+                  <div class="alert alert-danger" role="alert">
+                      {{ error|escape }}
+                  </div>
+                {% endfor %}
+        <form method="post" class="form" action="{% url 'signup' %}">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form__group">
+                <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+                <div class="form__field-group">
+                    {{ field|addclass:"form-control" }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="form__footer">
+                <button type="submit" class="button button_style_blue">Создать аккаунт</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
