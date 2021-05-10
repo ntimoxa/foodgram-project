@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %} Создание рецепта {% endblock %}
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+{% block content %}
+{% load user_filters %}
+    <div class="main__header">
+        <h1 class="main__title">Создание рецепта</h1>
+    </div>
+    <div class="form-container">
+        <form class="form" method="post" action="{ url 'new' }" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form__group">
+                <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+                <div class="form__field-group">
+                    {{ field|addclass:"form-control" }}
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{%static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/utils/debouncing.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'formRecipe.js' %}"></script>
+{% endblock %}

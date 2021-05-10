@@ -28,14 +28,14 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    title = models.CharField(max_length=256)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
-    image = models.ImageField()
-    description = models.TextField()
+    title = models.CharField(max_length=256, verbose_name='Название рецепта')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes', verbose_name='Автор')
+    image = models.ImageField(upload_to='posts/', verbose_name='Изображение')
+    description = models.TextField(verbose_name='Описание')
     pub_date = models.DateTimeField("date published", auto_now_add=True)
-    cooking_time = models.PositiveSmallIntegerField()
-    tag = models.ManyToManyField(Tag)
-    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
+    cooking_time = models.PositiveSmallIntegerField(verbose_name='Время приготовления')
+    tag = models.ManyToManyField(Tag, related_name='recipes', verbose_name='Теги')
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient', verbose_name='Ингредиенты')
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -46,9 +46,12 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='amount')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='amount')
     amount = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.amount
 
 
 class FollowAuthor(models.Model):
@@ -68,10 +71,10 @@ class FollowAuthor(models.Model):
 
 
 class SelectedRecipes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='selected')
-    select = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='selected', blank=True, null=True)
+    select = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class IngredientsPurchase(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase')
-    purchase = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase', blank=True, null=True)
+    purchase = models.ForeignKey(Ingredient, on_delete=models.CASCADE, blank=True, null=True)

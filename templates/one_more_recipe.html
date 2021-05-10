@@ -32,7 +32,7 @@
         <h1 class="main__title">Создание рецепта</h1>
     </div>
     <div class="form-container">
-        <form class="form" method="post" enctype="multipart/form-data">
+        <form class="form" method="post" action="{% url 'new' %}" enctype="multipart/form-data">
             <div class="form__group">
                 <label for="id_name" class="form__label">Название рецепта</label>
                 <div class="form__field-group">
