@@ -50,9 +50,6 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='amount')
     amount = models.PositiveSmallIntegerField()
 
-    def __str__(self):
-        return self.amount
-
 
 class FollowAuthor(models.Model):
     user = models.ForeignKey(

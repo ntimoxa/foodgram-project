@@ -8,6 +8,11 @@ urlpatterns = [
     path('recipe/<int:id>/', views.single_recipe, name="single_recipe"),
     path('recipe/new/', views.create_recipe, name='new'),
     path('recipe/tag/<int:tag_id>', views.tags_index, name='tag'),
+    path('follow/<str:username>', views.follow, name='follow'),
+    path('unfollow/<str:username>', views.unfollow, name='unfollow'),
+    path('profile/<str:username>', views.profile, name='profile'),
+    path('profile/<str:username>/<int:tag_id>', views.tags_profile, name='profile_tag'),
+    path('follower/', views.follow_index, name='my_follow'),
 ]
 
 if settings.DEBUG:

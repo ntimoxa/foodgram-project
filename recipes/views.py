@@ -1,8 +1,12 @@
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe, Tag, Ingredient
+from .models import Recipe, Tag, Ingredient, FollowAuthor
 from django.core.paginator import Paginator
 from .forms import RecipeForm
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+
+User = get_user_model()
 
 
 def index(request):
@@ -18,6 +22,7 @@ def single_recipe(request, id):
     return render(request, 'recipe_item.html', {'recipe': recipe})
 
 
+@login_required
 def create_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
@@ -36,7 +41,44 @@ def tags_index(request, tag_id):
     page = paginator.get_page(page_number)
     return render(request, 'index.html', {'page': page})
 
-class JustStaticPage(TemplateView):
-    # В переменной template_name обязательно указывается имя шаблона,
-    # на основе которого будет создана возвращаемая страница
-    template_name = 'AuthIndex.html'
+
+def tags_profile(request, username, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    author = get_object_or_404(User, username=username)
+    tags = Recipe.objects.filter(tag=tag, author=author)
+    paginator = Paginator(tags, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, 'profile.html', {'page': page})
+
+
+@login_required
+def follow(request, username):
+    following = get_object_or_404(User, username=username)
+    if not request.user == following:
+        FollowAuthor.objects.get_or_create(user=request.user, author=following)
+    return redirect('profile', username=username)
+
+
+@login_required
+def unfollow(request, username):
+    following = get_object_or_404(User, username=username)
+    FollowAuthor.objects.filter(user=request.user, author=following).delete()
+    return redirect('index')
+
+
+def profile(request, username):
+    author = get_object_or_404(User, username=username)
+    recipes = Recipe.objects.filter(author=author)
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, 'profile.html', {'page': page, 'author': author})
+
+
+def follow_index(request):
+    followers = User.objects.filter(following__user=request.user)
+    paginator = Paginator(followers, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, 'follower_index.html', {'page': page})
