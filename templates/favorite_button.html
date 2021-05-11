@@ -1,0 +1,16 @@
+<div class="card__footer">
+                {% if request.user.is_authenticated %}
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                {% if selected %}
+                <a href="{% url 'unfavor' recipe.id %}">
+                    <h3>True</h3>
+                    <button class="button button_style" name="favorites" data-out><span class="icon-favorite"></span></button>
+                </a>
+                {% else %}
+                <a href="{% url 'favor' recipe.id %}">
+                    <h3>False</h3>
+                    <button class=" button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                </a>
+                {% endif %}
+                {% endif %}
+            </div>

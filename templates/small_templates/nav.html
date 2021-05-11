@@ -13,7 +13,7 @@
                       <a href="#" class="nav__link link">Создать рецепт</a>
                   </li>
                   <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active {% endif %}">
-                      <a href="#" class="nav__link link">Избранное</a>
+                      <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                   </li>
                   <li class="nav__item {% if request.resolver_match.url_name == 'purchases' %} nav__item_active {% endif %}">
                       <a href="#" class="nav__link link">Список покупок</a>

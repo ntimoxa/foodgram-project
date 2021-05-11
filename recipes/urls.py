@@ -13,6 +13,9 @@ urlpatterns = [
     path('profile/<str:username>', views.profile, name='profile'),
     path('profile/<str:username>/<int:tag_id>', views.tags_profile, name='profile_tag'),
     path('follower/', views.follow_index, name='my_follow'),
+    path('favorites/', views.favorites_index, name='favorites'),
+    path('favor/<int:recipe_id>', views.add_favorite, name='favor'),
+
 ]
 
 if settings.DEBUG:

@@ -40,6 +40,7 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = "Рецепты"
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.title
@@ -67,9 +68,19 @@ class FollowAuthor(models.Model):
         ]
 
 
-class SelectedRecipes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='selected', blank=True, null=True)
-    select = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=True, null=True)
+class FavoriteRecipes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites', blank=True, null=True)
+    favor = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='selected', blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'favor'],
+                name='unique_favorgroup'),
+        ]
+
+    def __str__(self):
+        return f'{self.user.username}, {self.favor.title}'
 
 
 class IngredientsPurchase(models.Model):

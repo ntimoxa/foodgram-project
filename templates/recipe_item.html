@@ -33,18 +33,29 @@
                 <div class="single-card__items single-card__items_column">
                     <p class="single-card__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
                     <ul class="single-card__items">
-                        <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span>
-                            {{ recipe.author.get_full_name }}</p></li>
+                        <li class="single-card__item">
+                            <a href="{% url 'profile' recipe.author.username %}">
+                                <p class="single-card__text">
+                                    <span class="icon-user"></span>
+                                    {{ recipe.author.get_full_name }}
+                                </p>
+                            </a>
+                        </li>
+                        {% if recipe.author == request.user %}
                         <li class="single-card__item">  <a style="margin-left: 2.5em" href="#" class="single-card__text">Редактировать рецепт</a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 <ul class="single-card__items">
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
                     {% if recipe.author != request.user %}
-                    <li class="single-card__item"><a href="{% url 'follow' recipe.author %}">
-                        <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
-                    </a>
-                    </li>
+                        {% if not following %}
+                            <li class="single-card__item">
+                                <a href="{% url 'follow' recipe.author %}">
+                                    <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
                 <div class="single-card__section">
@@ -57,7 +68,7 @@
                 </div>
                 <div class="single-card__section">
                     <h3 class="single-card__section-title">Описание:</h3>
-                    <p class=" single-card__section-text">{{ recipe.description }}</p>
+                    <p class=" single-card__section-text">{{ recipe.description|linebreaksbr }}</p>
                 </div>
             </div>
         </div>
