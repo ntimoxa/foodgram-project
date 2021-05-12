@@ -15,6 +15,7 @@ urlpatterns = [
     path('follower/', views.follow_index, name='my_follow'),
     path('favorites/', views.favorites_index, name='favorites'),
     path('favor/<int:recipe_id>', views.add_favorite, name='favor'),
+    path('unfavor/<int:recipe_id>', views.delete_from_favorite, name='unfavor'),
 
 ]
 

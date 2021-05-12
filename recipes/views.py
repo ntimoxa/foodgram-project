@@ -11,19 +11,33 @@ User = get_user_model()
 
 def index(request):
     recipes = Recipe.objects.order_by('-pub_date')
+    favorites = []
+    if request.user.is_authenticated:
+        recipes_of_author = request.user.favorites.all()
+        for favorite in recipes_of_author:
+            favorites.append(favorite.favor)
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'index.html', {'page': page})
+    return render(request, 'index.html', {
+        'page': page,
+        'paginator': paginator,
+        'favorites': favorites,
+    })
 
 
 def single_recipe(request, id):
     recipe = get_object_or_404(Recipe, id=id)
     author = recipe.author
-    following = FollowAuthor.objects.filter(user=request.user, author=author).exists()
+    following = False
+    favorite = False
+    if request.user.is_authenticated:
+        following = FollowAuthor.objects.filter(user=request.user, author=author).exists()
+        favorite = FavoriteRecipes.objects.filter(user=request.user, favor=recipe)
     return render(request, 'recipe_item.html', {
         'recipe': recipe,
         'following': following,
+        'favorite': favorite,
     })
 
 
@@ -62,25 +76,28 @@ def follow(request, username):
     following = get_object_or_404(User, username=username)
     if not request.user == following:
         FollowAuthor.objects.get_or_create(user=request.user, author=following)
-    return redirect('profile', username=username)
+    return redirect('my_follow')
 
 
 @login_required
 def unfollow(request, username):
     following = get_object_or_404(User, username=username)
     FollowAuthor.objects.filter(user=request.user, author=following).delete()
-    return redirect('index')
+    return redirect('my_follow')
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    following = FollowAuthor.objects.filter(user=request.user, author=author).exists()
+    following = False
+    if request.user.is_authenticated:
+        following = FollowAuthor.objects.filter(user=request.user, author=author).exists()
     recipes = Recipe.objects.filter(author=author)
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'profile.html', {'page': page,
                                             'following': following,
+                                            'paginator': paginator,
                                             'author': author})
 
 
@@ -90,7 +107,10 @@ def follow_index(request):
     paginator = Paginator(followers, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'follower_index.html', {'page': page})
+    return render(request, 'follower_index.html', {
+        'page': page,
+        'paginator': paginator,
+    })
 
 
 @login_required()
@@ -100,7 +120,10 @@ def favorites_index(request):
     paginator = Paginator(favorites, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'favorite_index.html', {'page': page})
+    return render(request, 'favorite_index.html', {
+        'page': page,
+        'paginator': paginator
+    })
 
 
 @login_required()

@@ -6,16 +6,22 @@
 {% endblock %}
 {% block content %}
         <div class="single-card" data-id="371" data-author="12">
-            {% load thumbnail %}
-    {% thumbnail recipe.image "800x600" crop="center"  upscale=False as im %}
-            <img src="{{ im.url }}" alt="Какой-то текст" class="single-card__image"></a>
-    {% endthumbnail %}
+            <img src="{{ recipe.image.url }}" alt="Какой-то текст" class="single-card__image"></a>
             <div class="single-card__info">
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     <div class="single-card__favorite">
-                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
-                        <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                        {% if not favorite %}
+                            <a href="{% url 'favor' recipe.id %}">
+                                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                                <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'unfavor' recipe.id %}">
+                                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                                <div class="single-card__favorite-tooltip tooltip">Убрать из избранного</div>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -48,7 +54,7 @@
                 </div>
                 <ul class="single-card__items">
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-                    {% if recipe.author != request.user %}
+                    {% if request.user.is_authenticated and recipe.author != request.user %}
                         {% if not following %}
                             <li class="single-card__item">
                                 <a href="{% url 'follow' recipe.author %}">

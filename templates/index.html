@@ -45,32 +45,22 @@
             </div>
             <div class="card__footer">
                 {% if request.user.is_authenticated %}
-                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                {% if recipe in request.user.favorites.all %}
-                <a href="{% url 'unfavor' recipe.id %}">
-                    <h3>True</h3>
-                    <button class="button button_style" name="favorites" data-out><span class="icon-favorite"></span></button>
-                </a>
-                {% else %}
-                <a href="{% url 'favor' recipe.id %}">
-                    <button class=" button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                </a>
-                {% endif %}
+                    <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                    {% if recipe in favorites %}
+                        <a href="{% url 'unfavor' recipe.id %}">
+                            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                    </a>
+                    {% else %}
+                        <a href="{% url 'favor' recipe.id %}">
+                            <button class=" button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                    </a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
             {% endfor %}
     </div>
-
-        <nav class="pagination" aria-label="Search results pages">
-            <ul class="pagination__container">
-                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-left"></span></a></li>
-                <li class="pagination__item pagination__item_active"><a class="pagination__link link" href="#">1</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">2</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">3</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">4</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">5</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-right"></span></a></li>
-            </ul>
-        </nav>
+        {% if page.has_other_pages %}
+            {% include 'paginator.html' with items=page paginator=paginator %}
+        {% endif %}
 {% endblock %}
