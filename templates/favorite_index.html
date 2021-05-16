@@ -21,38 +21,10 @@
 
         </div>
         <div class="card-list">
-            {% for recipe in page %}
-            <div class="card" data-id="123">
-                <a href="{% url 'single_recipe' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
-                <div class="card__body">
-                    <a class="card__title link" href="{% url 'single_recipe' recipe.id %}" target="_blank">{{ recipe.title }}</a>
-                    <ul class="card__items">
-                    {% for tag in recipe.tag.all %}
-                        {% if tag.name == 'Обед' %}
-                            <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-                        {% elif tag.name == 'Завтрак' %}
-                            <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                        {% elif tag.name == 'Ужин' %}
-                            <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-                        {% endif %}
-                    {% endfor %}
-                    </ul>
-                    <div class="card__items card__items_column">
-                        <p class="card__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
-                        <p class="card__text"><span class="icon-user"></span> {{ recipe.author.get_full_name }}</p>
-                    </div>
-                </div>
-                <div class="card__footer">
-                    <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                    <a href="{% url 'unfavor' recipe.id %}">
-                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
+            {% include 'includes/card_item.html' with page=page %}
         </div>
         {% if page.has_other_pages %}
-            {% include 'paginator.html' with items=page paginator=paginator %}
+            {% include 'includes/paginator.html' with items=page paginator=paginator %}
         {% endif %}
 <script src="{% static 'js/components/MainCards.js' %}"></script>
 

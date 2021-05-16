@@ -14,8 +14,7 @@ SECRET_KEY = 'django-insecure-58j6_-1h151)z9&b5zpzm*dsp9w*9s9l&&^h%jj-+72%)&7o1&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -28,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes',
-    'sorl.thumbnail',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -42,6 +41,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
+
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [

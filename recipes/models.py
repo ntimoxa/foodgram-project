@@ -83,6 +83,16 @@ class FavoriteRecipes(models.Model):
         return f'{self.user.username}, {self.favor.title}'
 
 
-class IngredientsPurchase(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase', blank=True, null=True)
-    purchase = models.ForeignKey(Ingredient, on_delete=models.CASCADE, blank=True, null=True)
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase')
+    recipe = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='purchase')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_purchasegroup'),
+        ]
+
+    def __str__(self):
+        return f'{self.user} покупает {self.recipe}'

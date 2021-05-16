@@ -1,22 +1,31 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from .api.views import AddToFavorites, RemoveFromFavorites, AddToSubscriptions, RemoveFromSubscriptions
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.urlpatterns import format_suffix_patterns
 
-urlpatterns = [
+views_patterns = [
     path('', views.index, name="index"),
     path('recipe/<int:id>/', views.single_recipe, name="single_recipe"),
     path('recipe/new/', views.create_recipe, name='new'),
     path('recipe/tag/<int:tag_id>', views.tags_index, name='tag'),
-    path('follow/<str:username>', views.follow, name='follow'),
-    path('unfollow/<str:username>', views.unfollow, name='unfollow'),
     path('profile/<str:username>', views.profile, name='profile'),
     path('profile/<str:username>/<int:tag_id>', views.tags_profile, name='profile_tag'),
-    path('follower/', views.follow_index, name='my_follow'),
+    path('subscriptions/', views.follow_index, name='my_follow'),
     path('favorites/', views.favorites_index, name='favorites'),
-    path('favor/<int:recipe_id>', views.add_favorite, name='favor'),
-    path('unfavor/<int:recipe_id>', views.delete_from_favorite, name='unfavor'),
+]
 
+api_patterns = [
+    path('favorites/', AddToFavorites.as_view()),
+    path('favorites/<int:pk>/', RemoveFromFavorites.as_view()),
+    path('subscriptions/', AddToSubscriptions.as_view()),
+    path('subscriptions/<int:pk>/', RemoveFromSubscriptions.as_view()),
+]
+
+urlpatterns = [
+    path('', include(views_patterns)),
+    path('api/', include(format_suffix_patterns(api_patterns))),
 ]
 
 if settings.DEBUG:

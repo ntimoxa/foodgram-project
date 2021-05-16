@@ -1,6 +1,5 @@
-from django.views.generic.base import TemplateView
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe, Tag, Ingredient, FollowAuthor, FavoriteRecipes
+from .models import Recipe, Tag, FollowAuthor, FavoriteRecipes
 from django.core.paginator import Paginator
 from .forms import RecipeForm
 from django.contrib.auth import get_user_model
@@ -33,7 +32,7 @@ def single_recipe(request, id):
     favorite = False
     if request.user.is_authenticated:
         following = FollowAuthor.objects.filter(user=request.user, author=author).exists()
-        favorite = FavoriteRecipes.objects.filter(user=request.user, favor=recipe)
+        favorite = FavoriteRecipes.objects.filter(user=request.user, favor=recipe).exists()
     return render(request, 'recipe_item.html', {
         'recipe': recipe,
         'following': following,
@@ -71,20 +70,6 @@ def tags_profile(request, username, tag_id):
     return render(request, 'profile.html', {'page': page})
 
 
-@login_required
-def follow(request, username):
-    following = get_object_or_404(User, username=username)
-    if not request.user == following:
-        FollowAuthor.objects.get_or_create(user=request.user, author=following)
-    return redirect('my_follow')
-
-
-@login_required
-def unfollow(request, username):
-    following = get_object_or_404(User, username=username)
-    FollowAuthor.objects.filter(user=request.user, author=following).delete()
-    return redirect('my_follow')
-
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
@@ -99,6 +84,20 @@ def profile(request, username):
                                             'following': following,
                                             'paginator': paginator,
                                             'author': author})
+
+
+def page_not_found(request, exception):
+    return render(request,
+                  'misc/404.html',
+                  {'path': request.path},
+                  status=404
+                  )
+
+
+def server_error(request):
+    return render(request,
+                  'misc/500.html',
+                  status=500)
 
 
 @login_required()
@@ -122,21 +121,7 @@ def favorites_index(request):
     page = paginator.get_page(page_number)
     return render(request, 'favorite_index.html', {
         'page': page,
-        'paginator': paginator
+        'paginator': paginator,
+        'favorites': favorites
     })
 
-
-@login_required()
-def add_favorite(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    user = request.user
-    FavoriteRecipes.objects.get_or_create(user=user, favor=recipe)
-    return redirect('favorites')
-
-
-@login_required()
-def delete_from_favorite(request, recipe_id):
-    author = request.user
-    favor = Recipe.objects.get(pk=recipe_id)
-    FavoriteRecipes.objects.filter(user=author, favor=favor).delete()
-    return redirect('favorites')

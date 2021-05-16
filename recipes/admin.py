@@ -12,6 +12,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'description']
     inlines = [
         IngredientInLine,
     ]
@@ -21,7 +22,11 @@ class FollowAdmin(admin.ModelAdmin):
     model = FollowAuthor
 
 
-admin.site.register(FavoriteRecipes)
+class FavoriteAdmin(admin.ModelAdmin):
+    model = FavoriteRecipes
+
+
+admin.site.register(FavoriteRecipes, FavoriteAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Tag)

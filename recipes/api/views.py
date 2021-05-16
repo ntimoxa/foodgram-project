@@ -1,0 +1,46 @@
+from rest_framework.views import APIView
+from recipes.models import FavoriteRecipes, FollowAuthor
+from rest_framework.response import Response
+from rest_framework import status
+
+
+class AddToSubscriptions(APIView):
+    """Add the person to User's subscriptions"""
+
+    def post(self, request, format=None):
+        FollowAuthor.objects.get_or_create(
+            user=request.user,
+            author_id=request.data['id']
+        )
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class RemoveFromSubscriptions(APIView):
+    """Remove the person from User's subscriptions"""
+
+    def delete(self, request, pk, format=None):
+        FollowAuthor.objects.filter(
+            user=request.user,
+            author_id=pk
+        ).delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class AddToFavorites(APIView):
+    """Add the recipe to the favorites"""
+
+    def post(self, request, format=None):
+        FavoriteRecipes.objects.get_or_create(
+            user=request.user,
+            favor_id=request.data['id']
+        )
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class RemoveFromFavorites(APIView):
+    """Remove a Recipe from User's Favorites."""
+
+    def delete(self, request, pk, format=None):
+        FavoriteRecipes.objects.filter(favor_id=pk,
+                                       user=request.user).delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
