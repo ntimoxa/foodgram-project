@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
-from .api.views import AddToFavorites, RemoveFromFavorites, AddToSubscriptions, RemoveFromSubscriptions
+from .api.views import (AddToFavorites, RemoveFromFavorites, AddToSubscriptions, RemoveFromSubscriptions,
+                        AddToPurchases, RemoveFromPurchases)
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -14,6 +15,8 @@ views_patterns = [
     path('profile/<str:username>/<int:tag_id>', views.tags_profile, name='profile_tag'),
     path('subscriptions/', views.follow_index, name='my_follow'),
     path('favorites/', views.favorites_index, name='favorites'),
+    path('purchases/', views.shop_list, name='purchases'),
+    path('export/', views.download_ingredients_list, name='get'),
 ]
 
 api_patterns = [
@@ -21,6 +24,8 @@ api_patterns = [
     path('favorites/<int:pk>/', RemoveFromFavorites.as_view()),
     path('subscriptions/', AddToSubscriptions.as_view()),
     path('subscriptions/<int:pk>/', RemoveFromSubscriptions.as_view()),
+    path('purchases/', AddToPurchases.as_view()),
+    path('purchases/<int:pk>/', RemoveFromPurchases.as_view()),
 ]
 
 urlpatterns = [

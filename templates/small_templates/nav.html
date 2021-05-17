@@ -16,8 +16,8 @@
                       <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                   </li>
                   <li class="nav__item {% if request.resolver_match.url_name == 'purchases' %} nav__item_active {% endif %}">
-                      <a href="#" class="nav__link link">Список покупок</a>
-                      <span class="badge badge_style_blue nav__badge" id="counter"></span>
+                      <a href="{% url 'purchases' %}" class="nav__link link">Список покупок</a>
+                        <span class="badge badge_style_blue nav__badge" id="counter">{% if user.purchase.count > 0  %} {{ user.purchase.count }}{% endif %}</span>
                   </li>
                   {% endif %}
               </ul>

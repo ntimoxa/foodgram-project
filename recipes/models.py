@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=256)
-    measure = models.CharField(max_length=126)
+    measure = models.CharField(max_length=126, verbose_name='Единица измерения')
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -47,9 +47,12 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='amount')
+    ingredient = models.ForeignKey(Ingredient,
+                                   on_delete=models.CASCADE,
+                                   verbose_name='Ингредиент',
+                                   related_name='amount')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='amount')
-    amount = models.PositiveSmallIntegerField()
+    amount = models.PositiveSmallIntegerField(verbose_name='Количество')
 
 
 class FollowAuthor(models.Model):
@@ -85,7 +88,7 @@ class FavoriteRecipes(models.Model):
 
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase')
-    recipe = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='purchase')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='purchase')
 
     class Meta:
         constraints = [

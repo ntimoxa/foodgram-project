@@ -11,6 +11,7 @@
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     <div class="single-card__favorite">
+                        {% if request.user.is_authenticated %}
                         {% if favorite %}
                                 <button class="button button_style_none" name="favorites">
                                     <span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
@@ -19,6 +20,7 @@
                                 <button class="button button_style_none" name="favorites" data-out>
                                     <span class="icon-favorite icon-favorite_big"></span></button>
                                 <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -51,8 +53,9 @@
                     </ul>
                 </div>
                 <ul class="single-card__items">
+                    {% if request.user.is_authenticated %}
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-                    {% if request.user.is_authenticated and recipe.author != request.user %}
+                    {% if recipe.author != request.user %}
                         {% if not following %}
                             <li class="single-card__item">
                                     <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
@@ -62,6 +65,7 @@
                                     <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button>
                             </li>
                         {% endif %}
+                    {% endif %}
                     {% endif %}
                 </ul>
                 <div class="single-card__section">

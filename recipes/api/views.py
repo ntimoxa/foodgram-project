@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from recipes.models import FavoriteRecipes, FollowAuthor
+from recipes.models import FavoriteRecipes, FollowAuthor, Purchase
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -43,4 +43,26 @@ class RemoveFromFavorites(APIView):
     def delete(self, request, pk, format=None):
         FavoriteRecipes.objects.filter(favor_id=pk,
                                        user=request.user).delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class AddToPurchases(APIView):
+    """Add the recipe to shop list"""
+
+    def post(self, request, format=None):
+        Purchase.objects.get_or_create(
+            user=request.user,
+            recipe_id=request.data['id'],
+        )
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class RemoveFromPurchases(APIView):
+    """Remove the recipe from shop list"""
+
+    def delete(self, request, pk, format=None):
+        Purchase.objects.filter(
+            user=request.user,
+            recipe_id=pk,
+        ).delete()
         return Response({'success': True}, status=status.HTTP_200_OK)

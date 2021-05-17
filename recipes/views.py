@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe, Tag, FollowAuthor, FavoriteRecipes
+from .models import Recipe, Tag, FollowAuthor, FavoriteRecipes, Ingredient, RecipeIngredient
 from django.core.paginator import Paginator
 from .forms import RecipeForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from .resources import IngredientResource
+from django.http import HttpResponse
+from django.db.models import Sum
 
 User = get_user_model()
 
@@ -48,16 +51,28 @@ def create_recipe(request):
         new_form.author = request.user
         new_form.save()
         return redirect('index')
-    return render(request, 'another_new.html', {'form': form})
+    return render(request, 'one_more_recipe.html', {'form': form})
 
 
 def tags_index(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
     tags = Recipe.objects.filter(tag=tag)
     paginator = Paginator(tags, 6)
+    active = 'active'
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'index.html', {'page': page})
+    if tag.id == 3:
+        return render(request, 'index.html', {'page': page,
+                                              'paginator': paginator,
+                                              'active': active})
+    elif tag.id == 2:
+        return render(request, 'index.html', {'page': page,
+                                              'paginator': paginator,
+                                              'active2': active})
+    else:
+        return render(request, 'index.html', {'page': page,
+                                              'paginator': paginator,
+                                              'active3': active})
 
 
 def tags_profile(request, username, tag_id):
@@ -67,8 +82,8 @@ def tags_profile(request, username, tag_id):
     paginator = Paginator(tags, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'profile.html', {'page': page})
-
+    return render(request, 'profile.html', {'page': page,
+                                            'paginator': paginator})
 
 
 def profile(request, username):
@@ -125,3 +140,27 @@ def favorites_index(request):
         'favorites': favorites
     })
 
+
+@login_required()
+def shop_list(request):
+    recipes = Recipe.objects.filter(purchase__user=request.user)
+    return render(request, 'purchase_index.html', {
+        'recipes': recipes,
+    })
+
+
+@login_required()
+def download_ingredients_list(request):
+    """Download list of ingredients for all recipes in shop list"""
+    filename = "shop-list.txt"
+    author = request.user
+    recipes = RecipeIngredient.objects.filter(recipe__purchase__user=author)
+    ingredients = IngredientResource()
+    #recipes.order_by('ingredient__name').values(
+    #    'ingredient__name',
+     #   'ingredient__measure').annotate(
+     #   total_count=Sum('amount'))
+    result = ingredients.export(recipes)
+    response = HttpResponse(result, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+    return response

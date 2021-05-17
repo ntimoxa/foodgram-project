@@ -10,7 +10,7 @@
     </div>
     <div class="card-list">
         {% for author in page %}
-        <div class="card-user" data-author="700">
+        <div class="card-user" data-author="{{ author.id }}">
         <div class="card-user__header">
             <h2 class="card-user__title"> {{ author.get_full_name }}</h2>
         </div>
@@ -19,7 +19,7 @@
                 {% for recipe in author.recipes.all|slice:'3' %}
                 <li class="card-user__item">
                     <div class="recipe">
-                        <img src="{{ recipe.image.url }}" alt="какой-то-текст" class="recipe__image">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe__image">
                         <h3 class="recipe__title">{{ recipe.title }} </h3>
                         <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
                     </div>
@@ -27,7 +27,15 @@
                 {% endfor %}
                 {% if author.recipes.all.count > 3 %}
                 <li class="card-user__item">
-                    <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:'-3' }} рецептов...</a>
+                    <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:'-3' }}
+                        {% if author.recipes.all.count|add:'-3' == 2 or author.recipes.all.count|add:'-3' == 3 or author.recipes.all.count|add:'-3' == 4 %}
+                         рецепта...
+                        {% elif author.recipes.all.count|add:'-3' == 1 %}
+                        рецепт...
+                        {% else %}
+                        рецептов...
+                        {% endif %}
+                    </a>
                 </li>
                 {% endif %}
             </ul>
