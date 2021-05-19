@@ -152,15 +152,16 @@ def shop_list(request):
 @login_required()
 def download_ingredients_list(request):
     """Download list of ingredients for all recipes in shop list"""
-    filename = "shop-list.txt"
-    author = request.user
-    recipes = RecipeIngredient.objects.filter(recipe__purchase__user=author)
-    ingredients = IngredientResource()
-    #recipes.order_by('ingredient__name').values(
-    #    'ingredient__name',
-     #   'ingredient__measure').annotate(
-     #   total_count=Sum('amount'))
-    result = ingredients.export(recipes)
-    response = HttpResponse(result, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+    recipes = Recipe.objects.filter(purchase__user=request.user)
+    ingredients = recipes.order_by('ingredients__name').values(
+        'ingredients__name',
+        'ingredients__measure').annotate(
+        total_count=Sum('amount__amount'))
+    content = ''
+    for ingredient in ingredients:
+        ingredient_str = f'{ingredient["ingredients__name"]} - {ingredient["total_count"]} {ingredient["ingredients__measure"]}'
+        content += f'{ingredient_str}' + '\n'
+    filename = 'recipe_ingredients.txt'
+    response = HttpResponse(content=content, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename={filename}'
     return response

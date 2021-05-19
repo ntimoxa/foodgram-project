@@ -19,3 +19,11 @@ tablib==3.0.0
 thumbnail==1.5
 xlrd==2.0.1
 xlwt==1.3.0
+for key, name in request.POST.items():
+    if key.startswith('nameIngredient'):
+        ingredient = get_object_or_404(Ingredient,
+                                       title=name)
+        index = key.split('_')[1]
+        quantity = int(
+            request.POST[f'valueIngredient_{index}'])
+

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'recipes',
     'rest_framework',
     'import_export',
+    'about',
 
 ]
 
