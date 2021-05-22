@@ -10,16 +10,23 @@
         <h1 class="main__title">Создание рецепта</h1>
     </div>
     <div class="form-container">
-        <form class="form" method="post" action="{ url 'new' }" enctype="multipart/form-data">
+        {% if edit %}
+        <form class="form" method="post" enctype="multipart/form-data" action="{% url 'edit' 5 %}" >
+        {% else %}
+            <form class="form" method="post" enctype="multipart/form-data" action="{% url 'new' %}" >
+                {% endif %}
             {% csrf_token %}
             {% for field in form %}
             <div class="form__group">
                 <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
                 <div class="form__field-group">
-                    {{ field|addclass:"form-control" }}
+                    {{ field|addclass:"form__input" }}
                 </div>
             </div>
             {% endfor %}
+            <div class="form__footer">
+                <button type="submit" class="button button_style_blue">{% if edit %}Редактировать{% else %}Создать{% endif %} рецепт</button>
+            </div>
         </form>
     </div>
 

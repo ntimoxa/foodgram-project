@@ -26,14 +26,8 @@
                 </div>
 
                 <ul class="single-card__items">
-                    {% for tag in recipe.tag.all %}
-                    {% if tag.name == 'Обед' %}
-                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-                    {% elif tag.name == 'Завтрак' %}
-                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                    {% elif tag.name == 'Ужин' %}
-                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-                    {% endif %}
+                    {% for tag in recipe.tags.all %}
+                        <li class="single-card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.display_name }}</span></li>
                     {% endfor %}
                 </ul>
                 <div class="single-card__items single-card__items_column">
@@ -47,8 +41,8 @@
                                 </p>
                             </a>
                         </li>
-                        {% if recipe.author == request.user %}
-                        <li class="single-card__item">  <a style="margin-left: 2.5em" href="#" class="single-card__text">Редактировать рецепт</a></li>
+                        {% if recipe.author == request.user or request.user.is_superuser %}
+                        <li class="single-card__item">  <a style="margin-left: 2.5em" href="{% url 'edit' recipe.id %}" class="single-card__text">Редактировать рецепт</a></li>
                         {% endif %}
                     </ul>
                 </div>

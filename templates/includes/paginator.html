@@ -1,8 +1,9 @@
+{% load tags_filter %}
 <nav class="pagination" aria-label="Search results pages">
             <ul class="pagination__container">
                 {% if items.has_previous %}
                 <li class="pagination__item">
-                    <a class="pagination__link link" href="?page={{ items.previous_page_number }}">
+                    <a class="pagination__link link" href="?page={{ items.previous_page_number }}{{ tags|tag_to_url }}">
                     <span class="icon-left"></span>
                     </a>
                 </li>
@@ -14,13 +15,13 @@
                         </li>
                     {% else %}
                         <li class="pagination__item">
-                            <a class="pagination__link link" href="?page={{ i }}">{{ i }}</a>
+                            <a class="pagination__link link" href="?page={{ i }}{{ tags|tag_to_url }}">{{ i }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% if items.has_next %}
                     <li class="pagination__item">
-                            <a class="pagination__link link" href="?page={{ items.next_page_number }}">
+                            <a class="pagination__link link" href="?page={{ items.next_page_number }}{{ tags|tag_to_url }}">
                             <span class="icon-right"></span>
                             </a>
                     </li>

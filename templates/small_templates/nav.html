@@ -10,7 +10,7 @@
                       <a href="{% url 'my_follow' %}" class="nav__link link">Мои подписки</a>
                   </li>
                   <li class="nav__item {% if request.resolver_match.url_name == 'new' %} nav__item_active {% endif %}">
-                      <a href="#" class="nav__link link">Создать рецепт</a>
+                      <a href="{% url 'new' %}" class="nav__link link">Создать рецепт</a>
                   </li>
                   <li class="nav__item {% if request.resolver_match.url_name == 'favorites' %} nav__item_active {% endif %}">
                       <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
@@ -23,6 +23,7 @@
               </ul>
               <ul class="nav__items list">
                   {% if user.is_authenticated %}
+                  <li class="nav__item"><a href="{% url 'profile' user.username %}" class="nav__link link">Моя страница "{{ user.username }}"</a></li>
                   <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
                   <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
                   {% else %}

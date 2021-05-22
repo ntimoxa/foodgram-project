@@ -1,7 +1,15 @@
 from rest_framework.views import APIView
-from recipes.models import FavoriteRecipes, FollowAuthor, Purchase
+from recipes.models import FavoriteRecipes, Ingredient, FollowAuthor, Purchase
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets, mixins, filters
+from .serializers import IngredientSerializer
+
+
+class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('^name',)
 
 
 class AddToSubscriptions(APIView):
