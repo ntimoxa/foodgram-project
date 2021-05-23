@@ -20,6 +20,7 @@ def set_tag_qs(request, tag):
     new_req.setlist('tag', tags)
     return new_req.urlencode()
 
+
 @register.filter
 def tag_to_url(tags):
     url_param_tags = [f'tag={tag}' for tag in tags]

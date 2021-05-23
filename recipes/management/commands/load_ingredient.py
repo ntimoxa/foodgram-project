@@ -4,7 +4,7 @@ import csv
 from foodgram.settings import BASE_DIR
 import os
 
-CSV_FILE_PATH = os.path.join(BASE_DIR, 'ingredients.csv')
+CSV_FILE_PATH = os.path.join(BASE_DIR, 'fixtures/ingredients.csv')
 
 
 class Command(BaseCommand):

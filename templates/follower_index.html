@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
 {% endblock %}
 {% block content %}
+{% load user_filter %}
     <div class="main__header">
         <h1 class="main__title">Мои подписки</h1>
     </div>
@@ -16,7 +17,8 @@
         </div>
         <div class="card-user__body">
             <ul class="card-user__items">
-                {% for recipe in author.recipes.all|slice:'3' %}
+                {% for recipe in author.recipes.all %}
+                {% if forloop.counter < 4 %}
                 <li class="card-user__item">
                     <div class="recipe">
                         <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe__image">
@@ -24,18 +26,11 @@
                         <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
                     </div>
                 </li>
+                {% endif %}
                 {% endfor %}
                 {% if author.recipes.all.count > 3 %}
                 <li class="card-user__item">
-                    <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:'-3' }}
-                        {% if author.recipes.all.count|add:'-3' == 2 or author.recipes.all.count|add:'-3' == 3 or author.recipes.all.count|add:'-3' == 4 %}
-                         рецепта...
-                        {% elif author.recipes.all.count|add:'-3' == 1 %}
-                        рецепт...
-                        {% else %}
-                        рецептов...
-                        {% endif %}
-                    </a>
+                    <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:"-3"|remaining_recipes:"рецепт,рецепта,рецептов" }}...</a>
                 </li>
                 {% endif %}
             </ul>

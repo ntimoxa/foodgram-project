@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+{% load user_filters %}
+<h1>Использованные технологии</h1>
+    <div class="row">
 
-</body>
-</html>
+      <!-- Левый вспомогательный блок -->
+      <div class="col-md-3 mb-3 mt-1">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                <div class="h2 text-muted">
+                  <h2>Python</h2>
+                </div>
+              <li class="list-group-item">
+                <div class="h2 text-muted">
+                  <h2>Django</h2>
+                </div>
+              </li>
+                <li class="list-group-item">
+                <div class="h2 text-muted">
+                  <h2>DjangoRestFramework</h2>
+                </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+{% endblock %}
