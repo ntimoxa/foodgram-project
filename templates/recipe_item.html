@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{% static 'pages/single.css' %}">
 {% endblock %}
 {% block content %}
+{% load user_filter %}
         <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
             <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="single-card__image"></a>
             <div class="single-card__info">
@@ -12,7 +13,7 @@
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     <div class="single-card__favorite">
                         {% if request.user.is_authenticated %}
-                        {% if favorite %}
+                        {% if recipe|is_favored_by:request.user %}
                                 <button class="button button_style_none" name="favorites">
                                     <span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
                                 <div class="single-card__favorite-tooltip tooltip">Убрать из избранного</div>

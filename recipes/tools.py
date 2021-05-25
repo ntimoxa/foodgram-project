@@ -35,18 +35,20 @@ def save_recipe(request, form):
                     RecipeIngredient(
                         recipe=recipe,
                         ingredient=ingredient,
-                        amount=Decimal(amount.replace(',', '.'))
+                        amount=amount
                     )
                 )
+            if not objs:
+                return 'no data'
             RecipeIngredient.objects.bulk_create(objs)
 
             form.save_m2m()
             return recipe
-    except IntegrityError:
-        raise HttpResponseBadRequest
+    except IntegrityError as e:
         logging.error(
-            "Could not save form"
+            f'Could not save form because of {e}'
         )
+        raise HttpResponseBadRequest
 
 
 def recipe_edit(request, form, instance):
@@ -54,8 +56,8 @@ def recipe_edit(request, form, instance):
         with transaction.atomic():
             RecipeIngredient.objects.filter(recipe=instance).delete()
             return save_recipe(request, form)
-    except IntegrityError:
-        raise HttpResponseBadRequest
+    except IntegrityError as e:
         logging.error(
-            "Could not edit recipe"
+            f'Could not edit recipe becasue of {e}'
         )
+        raise HttpResponseBadRequest
