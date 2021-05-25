@@ -1,5 +1,4 @@
 import logging
-from decimal import Decimal
 
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseBadRequest

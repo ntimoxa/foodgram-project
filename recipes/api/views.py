@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from recipes.models import FavoriteRecipes, Ingredient, FollowAuthor, Purchase
-from rest_framework.response import Response
-from rest_framework import status, viewsets, mixins, filters
+from rest_framework import viewsets, mixins, filters
 from .serializers import IngredientSerializer
 from django.http import JsonResponse
 
