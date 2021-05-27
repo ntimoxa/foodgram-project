@@ -1,20 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
+{% load user_filter %}
 <div class="main__header">
             <h1 class="main__title">{{ author.get_full_name }}</h1>
             <ul class="tags">
                 {% include './includes/tags_filtration.html' %}
             </ul>
         </div>
-        {% if request.user.is_authenticated and request.user != author %}
-            {% if not following %}
-                <div class="author-subscribe" data-author="{{ author.id }}">
-                    <p style="padding: 0 0 2em 0;">
-                        <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
-                </div>
-            {% endif %}
+        {% if user.is_authenticated and author != user %}
+    <div class="author-subscribe" data-author="{{ author.id }}">
+      <p style="padding: 0 0 2em 0;">
+        {% if user|is_follow:author %}
+          <button class="button button_style_light-blue button_size_subscribe" name="subscribe">
+            Отписаться от автора
+          </button>
+        {% else %}
+          <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>
+            Подписаться на автора
+          </button>
         {% endif %}
+      </p>
+    </div>
+  {% endif %}
         <div class="card-list">
             {% include 'includes/card_item.html' with page=page %}
     </div>

@@ -68,6 +68,9 @@
               <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingr.ingredient.measure }}">
             </div>
           {% endfor %}
+          {% if not valid %}
+          <span class="form__error">Выберите хотя бы один ингредиент</span>
+          {% endif %}
         </div>
         <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
         <span class="form__error"></span>

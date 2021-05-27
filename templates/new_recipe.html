@@ -11,7 +11,7 @@
     </div>
     <div class="form-container">
         {% if edit %}
-        <form class="form" method="post" enctype="multipart/form-data" action="{% url 'edit' 5 %}" >
+        <form class="form" method="post" enctype="multipart/form-data" action="{% url 'edit' recipe.id %}" >
         {% else %}
             <form class="form" method="post" enctype="multipart/form-data" action="{% url 'new' %}" >
                 {% endif %}

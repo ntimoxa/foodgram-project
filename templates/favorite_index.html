@@ -10,7 +10,7 @@
 
         </div>
         <div class="card-list">
-            {% include 'includes/card_item.html' with page=page %}
+            {% include 'includes/card_item.html' %}
         </div>
         {% if page.has_other_pages %}
             {% include 'includes/paginator.html' with items=page paginator=paginator %}
