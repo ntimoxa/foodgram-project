@@ -1,9 +1,5 @@
 {% load user_filter %}
 {% if request.user.is_authenticated %}
-<<<<<<< HEAD
-=======
-{% if user.is_authenticated %}
->>>>>>> ca1b883d613a22a93b0efee00a757763dd3d3007
 	  {% if recipe|is_in_shop_list_of:user %}
 		<button class="button button_style_light-blue-outline" name="purchases">
 		  <span class="icon-check button__icon"></span>Рецепт добавлен
@@ -20,5 +16,4 @@
         <button class=" button button_style_none" name="favorites" data-out>
             <span class="icon-favorite"></span></button>
     {% endif %}
-{% endif %}
 {% endif %}
