@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe, FollowAuthor, FavoriteRecipes, Tag
+from .models import Recipe, FollowAuthor, Tag
 from django.core.paginator import Paginator
 from .forms import RecipeForm
 from django.contrib.auth import get_user_model
