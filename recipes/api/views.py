@@ -3,12 +3,6 @@ from recipes.models import FavoriteRecipes, Ingredient, FollowAuthor, Purchase
 from rest_framework import viewsets, mixins, filters
 from .serializers import IngredientSerializer
 from django.http import JsonResponse
-<<<<<<< HEAD
-=======
-
-SUCCESS_RESPONSE = JsonResponse({'success': True})
-FAILED_RESPONSE = JsonResponse({'success': False}, status=400)
->>>>>>> ca1b883d613a22a93b0efee00a757763dd3d3007
 
 SUCCESS_RESPONSE = JsonResponse({'success': True})
 FAILED_RESPONSE = JsonResponse({'success': False}, status=400)
