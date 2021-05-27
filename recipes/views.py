@@ -103,7 +103,7 @@ def profile(request, username):
         tags__title__in=tags
     ).prefetch_related('tags').distinct()
 
-    paginator = Paginator(recipes, 6)
+    paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'profile.html', {'page': page,
@@ -132,7 +132,7 @@ def server_error(request):
 def follow_index(request):
     """Show recipes of authors, following by user"""
     followers = User.objects.filter(following__user=request.user)
-    paginator = Paginator(followers, 6)
+    paginator = Paginator(followers, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'follower_index.html', {
@@ -154,7 +154,7 @@ def favorites_index(request):
     ).prefetch_related(
         'tags'
     ).distinct()
-    paginator = Paginator(favorites, 6)
+    paginator = Paginator(favorites, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'favorite_index.html', {

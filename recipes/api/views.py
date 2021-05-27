@@ -8,13 +8,6 @@ SUCCESS_RESPONSE = JsonResponse({'success': True})
 FAILED_RESPONSE = JsonResponse({'success': False}, status=400)
 
 
-# Честно просидел всю ночь, делал через CreateModelMixin, Destroy..
-# А также через роутеры и вьюсеты
-# Но уткнулся в непонятное. Почему-то в сериализатор
-# передавался параметр 'id' и ничего не создавалось
-# Нагуглить не смог, наставники уже с нами не работают
-# Сроки поджимают, поэтому решил оставить рабочий вариант
-
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
