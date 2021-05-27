@@ -68,11 +68,7 @@ def create_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         recipe = save_recipe(request, form)
-<<<<<<< HEAD
         if recipe is not None:
-=======
-        if recipe != 'no data':
->>>>>>> ca1b883d613a22a93b0efee00a757763dd3d3007
             return redirect('single_recipe', id=recipe.id)
         return render(request, 'one_more_recipe.html', {
             'form': form,

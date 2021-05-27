@@ -38,11 +38,7 @@ def save_recipe(request, form):
                     )
                 )
             if not objs:
-<<<<<<< HEAD
                 return None
-=======
-                return 'no data'
->>>>>>> ca1b883d613a22a93b0efee00a757763dd3d3007
             RecipeIngredient.objects.bulk_create(objs)
 
             form.save_m2m()
