@@ -11,10 +11,12 @@ from foodgram.settings import PAGINATION_PAGE_SIZE
 
 User = get_user_model()
 TAGS = ['breakfast', 'lunch', 'dinner']
-ALL_TAGS = Tag.objects.all()
 
 
-def queryset(request, tags):
+def index(request):
+    tags = request.GET.getlist('tag', TAGS)
+    all_tags = Tag.objects.all()
+
     recipes = Recipe.objects.filter(
         tags__title__in=tags
     ).select_related(
@@ -22,17 +24,6 @@ def queryset(request, tags):
     ).prefetch_related(
         'tags'
     ).distinct()
-    query = recipes.with_is_favorite(
-        user_id=request.user
-    ).with_is_purchase(
-        user_id=request.user
-    )
-    return query
-
-
-def index(request):
-    tags = request.GET.getlist('tag', TAGS)
-    recipes = queryset(request, tags)
     paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -40,26 +31,14 @@ def index(request):
         'page': page,
         'paginator': paginator,
         'tags': tags,
-        'all_tags': ALL_TAGS
+        'all_tags': all_tags
     })
 
 
 def single_recipe(request, id):
     recipe = get_object_or_404(Recipe, id=id)
-    author = recipe.author
-    following = False
-    favorite = False
-    if request.user.is_authenticated:
-        following = FollowAuthor.objects.filter(
-            user=request.user,
-            author=author).exists()
-        favorite = FavoriteRecipes.objects.filter(
-            user=request.user,
-            favor=recipe).exists()
     return render(request, 'recipe_item.html', {
         'recipe': recipe,
-        'following': following,
-        'favorite': favorite,
     })
 
 
@@ -80,8 +59,10 @@ def create_recipe(request):
 def edit_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe,
                                id=recipe_id)
-    if not request.user.is_superuser and request.user != recipe.author:
-        return redirect('single_recipe', id=recipe_id)
+    if not request.user.is_superuser:
+
+        if request.user != recipe.author:
+            return redirect('single_recipe', id=recipe_id)
     form = RecipeForm(request.POST or None,
                       files=request.FILES or None,
                       instance=recipe)
@@ -111,14 +92,18 @@ def delete_recipe(request, id):
 def profile(request, username):
     """Show profile of user by it's username"""
     author = get_object_or_404(User, username=username)
+    following = False
     tags = request.GET.getlist('tag', TAGS)
     all_tags = Tag.objects.all()
     if request.user.is_authenticated:
         following = FollowAuthor.objects.filter(
             user=request.user,
             author=author).exists()
-    recipes = queryset(request, tags).filter(author=author)
-    paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
+    recipes = author.recipes.filter(
+        tags__title__in=tags
+    ).prefetch_related('tags').distinct()
+
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'profile.html', {'page': page,
@@ -147,7 +132,7 @@ def server_error(request):
 def follow_index(request):
     """Show recipes of authors, following by user"""
     followers = User.objects.filter(following__user=request.user)
-    paginator = Paginator(followers, PAGINATION_PAGE_SIZE)
+    paginator = Paginator(followers, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'follower_index.html', {
@@ -160,15 +145,24 @@ def follow_index(request):
 def favorites_index(request):
     """Show user's favorite recipes"""
     tags = request.GET.getlist('tag', TAGS)
-    recipes = queryset(request, tags).filter(is_favorite=True)
-    paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
+    all_tags = Tag.objects.all()
+    favorites = Recipe.objects.filter(
+        selected__user=request.user,
+        tags__title__in=tags
+    ).select_related(
+        'author'
+    ).prefetch_related(
+        'tags'
+    ).distinct()
+    paginator = Paginator(favorites, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'favorite_index.html', {
         'page': page,
         'paginator': paginator,
+        'favorites': favorites,
         'tags': tags,
-        'all_tags': ALL_TAGS
+        'all_tags': all_tags
     })
 
 
