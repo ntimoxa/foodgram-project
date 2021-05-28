@@ -24,9 +24,10 @@ def is_in_shop_list_of(recipe, user):
 @register.filter
 def remaining_recipes(number):
     last_digit = int(number) % 10
-    if last_digit > 4 or last_digit == 0 or int(number) % 100 == 11:
+    two_last_digits = int(number) % 100
+    if last_digit > 4 or last_digit == 0 or (10 < two_last_digits < 15):
         return f'{number} рецептов'
-    elif last_digit > 1 and last_digit < 5:
+    elif 1 < last_digit < 5:
         return f'{number} рецепта'
     elif last_digit == 1:
         return f'{number} рецепт'
