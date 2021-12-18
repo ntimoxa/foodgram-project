@@ -6,7 +6,6 @@
 
 ![foodgram_workflow](https://github.com/ntimoxa/foodgram-project/actions/workflows/foodgram.yaml/badge.svg)
 
-Проект доступен по адресу http://84.201.177.30/
 
 ## Технологии
 The project is powered by:
